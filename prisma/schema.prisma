@@ -1,0 +1,86 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String    @id @default(uuid())
+  name     String
+  username String    @unique
+  point    Int       @default(20)
+  account  Account[]
+  topup    Topup[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  Bet       Bet[]
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+model Topup {
+  id     String  @id @default(uuid())
+  point  Int
+  User   User?   @relation(fields: [userId], references: [id])
+  userId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model Bet {
+  id             String  @id @default(uuid())
+  User           User    @relation(fields: [userId], references: [id])
+  userId         String
+  nominal        Int
+  playerChoice   String
+  computerChoice String
+  isWin          Boolean
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model Balance {
+  id        String   @id @default(uuid())
+  point     Int      @default(0)
+  percent   Int      @default(10)
+  createdAt DateTime @unique @default(now())
+  updatedAt DateTime @default(now())
+}
+
+// model Deposit {
+//   id        String   @id @default(uuid())
+//   point     Int      @default(0)
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @default(now())
+// }
