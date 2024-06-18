@@ -58,25 +58,25 @@ model Topup {
 }
 
 model Bet {
-  id             String  @id @default(uuid())
-  User           User    @relation(fields: [userId], references: [id])
+  id             String @id @default(uuid())
+  User           User   @relation(fields: [userId], references: [id])
   userId         String
-  nominal        Int
   playerChoice   String
   computerChoice String
-  isWin          Boolean
+  point          Float
+  winner         String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 }
 
-model Balance {
-  id        String   @id @default(uuid())
-  point     Int      @default(0)
-  percent   Int      @default(10)
-  createdAt DateTime @unique @default(now())
-  updatedAt DateTime @default(now())
-}
+// model Balance {
+//   id        String   @id @default(uuid())
+//   point     Int      @default(0)
+//   percent   Int      @default(10)
+//   createdAt DateTime @unique @default(now())
+//   updatedAt DateTime @default(now())
+// }
 
 // model Deposit {
 //   id        String   @id @default(uuid())

@@ -40,6 +40,20 @@ CREATE TABLE "Topup" (
     CONSTRAINT "Topup_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "Bet" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "playerChoice" TEXT NOT NULL,
+    "computerChoice" TEXT NOT NULL,
+    "point" DOUBLE PRECISION NOT NULL,
+    "winner" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Bet_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
 
@@ -48,3 +62,6 @@ ALTER TABLE "Account" ADD CONSTRAINT "Account_userId_fkey" FOREIGN KEY ("userId"
 
 -- AddForeignKey
 ALTER TABLE "Topup" ADD CONSTRAINT "Topup_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Bet" ADD CONSTRAINT "Bet_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

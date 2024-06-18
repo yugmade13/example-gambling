@@ -10,10 +10,10 @@ export default async function Home() {
 
   return (
     <section className="min-h-screen max-w-[500px] m-auto">
-      <Navbar point={user?.point!} />
+      <Navbar usersId={user?.id!} />
       <div className="w-full px-4">
         <Fight />
-        <FormPlay />
+        <FormPlay userId={user?.id!} />
       </div>
     </section>
   );

@@ -1,9 +1,34 @@
+'use client';
+
 import Link from 'next/link';
 import Rocket from './svg/rocket';
 import Point from './svg/point';
-import { User } from '@prisma/client';
+import { useContext, useEffect, useState } from 'react';
+import { FightContext } from '@/context/fightContext';
 
-export default function Navbar({ point }: { point: number }) {
+export default function Navbar({
+  usersId,
+}: {
+  usersId: string;
+}) {
+  const { isPlay } = useContext(FightContext);
+  const [point, setPoint] = useState();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await fetch('/api/users?id=' + usersId, {
+          cache: 'no-store',
+        });
+        const data = await res.json();
+        setPoint(data.data.point);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchUser();
+  }, [usersId, isPlay]);
+
   return (
     <nav className="p-4">
       <div className="w-full flex justify-between items-center">

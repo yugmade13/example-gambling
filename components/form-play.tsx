@@ -11,7 +11,7 @@ import { cn } from '@/lib/utils';
 import { Card, CardHeader } from './ui/card';
 import Point from './svg/point';
 import { FightContext } from '@/context/fightContext';
-import { playGame } from '@/lib/playgame';
+import { playGame } from '@/app/actions/playGame';
 
 type FormType = {
   point: string;
@@ -79,41 +79,44 @@ export const Radio = ({
   );
 };
 
-export default function FormPlay() {
+export default function FormPlay({ userId }: { userId: string }) {
   const { register, handleSubmit, watch, reset } = useForm<FormType>();
   const { setPlayerChoice, setComputerChoice, setMessage, isPlay, setIsPlay } =
     useContext(FightContext);
 
-  const computerChoice = useCallback(() => {
-    const choices: string[] = ['rock', 'paper', 'scissors'];
-    const randomIndex: number = Math.floor(Math.random() * choices.length);
-    setComputerChoice(choices[randomIndex]);
-    return choices[randomIndex];
-  }, [setComputerChoice]);
-
-  const onSubmit: SubmitHandler<FormType> = ({ playerChoice }) => {
+  const onSubmit: SubmitHandler<FormType> = async ({ playerChoice, point }) => {
     setIsPlay(true);
-    const result = playGame(playerChoice, computerChoice());
-    setMessage(result);
+    setPlayerChoice('');
+    await playGame({ userId, playerChoice, point: Number(point) }).then(
+      ({ isSuccess, message, data }) => {
+        if (isSuccess) {
+          setMessage(message);
+          setComputerChoice(data?.computerChoice!);
+          setPlayerChoice(data?.playerChoice!);
+        } else {
+          setMessage(message);
+        }
+      }
+    );
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <RadioGroup className="grid-cols-5 mb-6" title="Pasang taruhan">
-        <Radio id="1" value="1" type="point" register={register}>
-          <h3 className="text-xs ">1K</h3>
-        </Radio>
-        <Radio id="1.5" value="1.5" type="point" register={register}>
-          <h3 className="text-xs ">1.5K</h3>
-        </Radio>
-        <Radio id="2" value="2" type="point" register={register}>
+        <Radio id="1" value="2" type="point" register={register}>
           <h3 className="text-xs ">2K</h3>
         </Radio>
-        <Radio id="3" value="3" type="point" register={register}>
-          <h3 className="text-xs ">3K</h3>
+        <Radio id="4" value="4" type="point" register={register}>
+          <h3 className="text-xs ">4K</h3>
         </Radio>
         <Radio id="5" value="5" type="point" register={register}>
           <h3 className="text-xs ">5K</h3>
+        </Radio>
+        <Radio id="8" value="8" type="point" register={register}>
+          <h3 className="text-xs ">8K</h3>
+        </Radio>
+        <Radio id="10" value="10" type="point" register={register}>
+          <h3 className="text-xs ">10K</h3>
         </Radio>
       </RadioGroup>
       <RadioGroup className="grid-cols-3 mb-6" title="Pilih senjata">
