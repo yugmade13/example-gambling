@@ -12,6 +12,7 @@ import { Card, CardHeader } from './ui/card';
 import Point from './svg/point';
 import { FightContext } from '@/context/fightContext';
 import { playGame } from '@/app/actions/playGame';
+import { toast } from './ui/use-toast';
 
 type FormType = {
   point: string;
@@ -85,16 +86,24 @@ export default function FormPlay({ userId }: { userId: string }) {
     useContext(FightContext);
 
   const onSubmit: SubmitHandler<FormType> = async ({ playerChoice, point }) => {
-    setIsPlay(true);
-    setPlayerChoice('');
     await playGame({ userId, playerChoice, point: Number(point) }).then(
-      ({ isSuccess, message, data }) => {
-        if (isSuccess) {
-          setMessage(message);
-          setComputerChoice(data?.computerChoice!);
-          setPlayerChoice(data?.playerChoice!);
+      ({ isSuccess, message, toastMessage, data }) => {
+        if (toastMessage) {
+          toast({
+            variant: 'destructive',
+            title: 'Maaf',
+            description: message,
+          });
         } else {
-          setMessage(message);
+          setPlayerChoice('');
+          setIsPlay(true);
+          if (isSuccess) {
+            setMessage(message);
+            setComputerChoice(data?.computerChoice!);
+            setPlayerChoice(data?.playerChoice!);
+          } else {
+            setMessage(message);
+          }
         }
       }
     );

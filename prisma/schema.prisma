@@ -13,19 +13,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id       String    @id @default(uuid())
-  name     String
-  username String    @unique
-  point    Int       @default(20)
-  account  Account[]
-  topup    Topup[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-  Bet       Bet[]
-}
-
 model Account {
   userId            String
   type              String
@@ -47,6 +34,21 @@ model Account {
   @@id([provider, providerAccountId])
 }
 
+model User {
+  id        String    @id @default(uuid())
+  name      String
+  username  String    @unique
+  point     Int       @default(10)
+  winPoint  Int       @default(0)
+  losePint  Int       @default(0)
+  account   Account[]
+  topup     Topup[]
+  Bet       Bet[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
 model Topup {
   id     String  @id @default(uuid())
   point  Int
@@ -63,24 +65,9 @@ model Bet {
   userId         String
   playerChoice   String
   computerChoice String
-  point          Float
+  point          Int
   winner         String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 }
-
-// model Balance {
-//   id        String   @id @default(uuid())
-//   point     Int      @default(0)
-//   percent   Int      @default(10)
-//   createdAt DateTime @unique @default(now())
-//   updatedAt DateTime @default(now())
-// }
-
-// model Deposit {
-//   id        String   @id @default(uuid())
-//   point     Int      @default(0)
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @default(now())
-// }

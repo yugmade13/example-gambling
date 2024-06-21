@@ -8,7 +8,7 @@ export async function topupPointUser({
 }: {
   userId: string;
   point: number;
-}) {  
+}) {
   const user = await prisma.user.findUnique({
     where: {
       id: userId,
@@ -23,8 +23,12 @@ export async function topupPointUser({
     },
   });
 
-  if (userTopup.length >= 2)
-    return { isSuccess: false, message: 'Anda hanya mendapatkan kesempatan topup 2x' };
+  if (userTopup.length >= 2) {
+    return {
+      isSuccess: false,
+      message: 'Anda hanya mendapatkan kesempatan topup 2x',
+    };
+  }
 
   try {
     await prisma.$transaction([

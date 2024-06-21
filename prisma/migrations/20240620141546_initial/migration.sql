@@ -1,16 +1,4 @@
 -- CreateTable
-CREATE TABLE "User" (
-    "id" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-    "username" TEXT NOT NULL,
-    "point" INTEGER NOT NULL DEFAULT 20,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "Account" (
     "userId" TEXT NOT NULL,
     "type" TEXT NOT NULL,
@@ -30,6 +18,20 @@ CREATE TABLE "Account" (
 );
 
 -- CreateTable
+CREATE TABLE "User" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "username" TEXT NOT NULL,
+    "point" INTEGER NOT NULL DEFAULT 10,
+    "winPoint" INTEGER NOT NULL DEFAULT 0,
+    "losePint" INTEGER NOT NULL DEFAULT 0,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "Topup" (
     "id" TEXT NOT NULL,
     "point" INTEGER NOT NULL,
@@ -46,7 +48,7 @@ CREATE TABLE "Bet" (
     "userId" TEXT NOT NULL,
     "playerChoice" TEXT NOT NULL,
     "computerChoice" TEXT NOT NULL,
-    "point" DOUBLE PRECISION NOT NULL,
+    "point" INTEGER NOT NULL,
     "winner" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,

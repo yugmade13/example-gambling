@@ -69,25 +69,34 @@ export default function FormTopUp({ userId }: { userId: string }) {
   const { setPlayerChoice, setIsPlay } = useContext(FightContext);
 
   const onSubmit: SubmitHandler<TopupType> = async ({ point }) => {
-    await topupPointUser({ userId, point: Number(point) }).then(
-      ({ isSuccess, message }) => {
-        if (isSuccess) {
-          toast({
-            duration: 3000,
-            title: 'Hore!',
-            description: message,
-          });
-        } else {
-          toast({
-            duration: 3000,
-            variant: 'destructive',
-            title: 'Maaf!',
-            description: message,
-          });
+    if (Number(point) > 0) {
+      await topupPointUser({ userId, point: Number(point) }).then(
+        ({ isSuccess, message }) => {
+          if (isSuccess) {
+            toast({
+              duration: 3000,
+              title: 'Hore!',
+              description: message,
+            });
+          } else {
+            toast({
+              duration: 3000,
+              variant: 'destructive',
+              title: 'Maaf!',
+              description: message,
+            });
+          }
+          reset();
         }
-        reset();
-      }
-    );
+      );
+    } else {
+      toast({
+        duration: 3000,
+        variant: 'destructive',
+        title: 'Peringatan!',
+        description: 'Silahkan pilih point  teerlebih dahulu.',
+      });
+    }
   };
 
   return (

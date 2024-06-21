@@ -1,7 +1,37 @@
-export function generateComputerChoice() {
-  const choices: string[] = ['rock', 'paper', 'scissors'];
-  const randomIndex: number = Math.floor(Math.random() * choices.length);
-  return choices[randomIndex];
+import { Bet } from '@prisma/client';
+
+export type Choice = 'rock' | 'paper' | 'scissors';
+
+const choices: Choice[] = ['rock', 'paper', 'scissors'];
+
+function getRandomChoice(): Choice {
+  return choices[Math.floor(Math.random() * choices.length)];
+}
+
+export function getWinningChoice(choice: Choice): Choice {
+  const winningMap: Record<Choice, Choice> = {
+    rock: 'paper',
+    paper: 'scissors',
+    scissors: 'rock',
+  };
+  return winningMap[choice];
+}
+
+export function getComputerChoice(history: Bet[]) {
+  if (history.length < 2) {
+    return getRandomChoice();
+  } else {
+    const historis = history.slice(0, 2);
+    const sameChoice = historis.every(
+      (item) => item.playerChoice === historis[0].playerChoice
+    );
+
+    if (sameChoice) {
+      return getWinningChoice(historis[0].playerChoice as Choice);
+    }
+
+    return getRandomChoice();
+  }
 }
 
 export function determineWinner({

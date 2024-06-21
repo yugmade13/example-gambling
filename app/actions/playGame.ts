@@ -1,7 +1,12 @@
 'use server';
 
 import prisma from '@/prisma/db';
-import { generateComputerChoice, determineWinner } from '@/lib/play';
+import {
+  getComputerChoice,
+  determineWinner,
+  getWinningChoice,
+  Choice,
+} from '@/lib/play';
 
 export async function playGame({
   userId,
@@ -12,9 +17,6 @@ export async function playGame({
   playerChoice: string;
   point: number;
 }) {
-  const computerChoice = generateComputerChoice();
-  const winner = determineWinner({ playerChoice, computerChoice });
-
   const user = await prisma.user.findUnique({
     where: {
       id: userId,
@@ -22,6 +24,51 @@ export async function playGame({
   });
 
   if (!user) return { isSuccess: false, message: 'User tidak ditemukan.' };
+
+  if (user?.point! < point) {
+    return {
+      isSuccess: false,
+      toastMessage: true,
+      message: 'Point anda tidak cukup untuk bermain',
+    };
+  }
+
+  const history = await prisma.bet.findMany({
+    where: {
+      userId,
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+    take: 5,
+  });
+
+  let computerChoice;
+  let winner;
+
+  const userTopup = await prisma.topup.findFirst({
+    where: {
+      userId,
+    },
+  });
+
+  if (userTopup) {
+    if (user.point > 70) {
+      computerChoice = getWinningChoice(playerChoice as Choice);
+      winner = determineWinner({ playerChoice, computerChoice });
+    } else {
+      computerChoice = getComputerChoice(history);
+      winner = determineWinner({ playerChoice, computerChoice });
+    }
+  } else {
+    if (user.point > 50) {
+      computerChoice = getWinningChoice(playerChoice as Choice);
+      winner = determineWinner({ playerChoice, computerChoice });
+    } else {
+      computerChoice = getComputerChoice(history);
+      winner = determineWinner({ playerChoice, computerChoice });
+    }
+  }
 
   if (winner === 'player') {
     try {
@@ -41,13 +88,15 @@ export async function playGame({
           },
           data: {
             point: user?.point! + point,
+            winPoint: user?.winPoint + point,
+            losePint: user?.losePint - point,
           },
         }),
       ]);
 
       return {
         isSuccess: true,
-        message: 'Pemain menang!',
+        message: 'Anda menang!',
         data: transaction[0],
       };
     } catch (error) {
@@ -74,13 +123,15 @@ export async function playGame({
           },
           data: {
             point: user?.point! - point,
+            winPoint: user?.winPoint - point,
+            losePint: user?.losePint + point,
           },
         }),
       ]);
 
       return {
         isSuccess: true,
-        message: 'Computer menang!',
+        message: 'Anda kalah!',
         data: transaction[0],
       };
     } catch (error) {

@@ -6,11 +6,7 @@ import Point from './svg/point';
 import { useContext, useEffect, useState } from 'react';
 import { FightContext } from '@/context/fightContext';
 
-export default function Navbar({
-  usersId,
-}: {
-  usersId: string;
-}) {
+export default function Navbar({ usersId }: { usersId: string }) {
   const { isPlay } = useContext(FightContext);
   const [point, setPoint] = useState();
 
@@ -43,7 +39,7 @@ export default function Navbar({
           href="/profile"
           className="text-sm underline flex justify-end items-end gap-2"
         >
-          <span>{point}K</span>
+          <span>{point} K</span>
           <Point size="18" />
         </Link>
       </div>
