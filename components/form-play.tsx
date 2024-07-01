@@ -6,7 +6,7 @@ import { SubmitHandler, useForm, UseFormRegister } from 'react-hook-form';
 import rockImage from '@/assets/rock.svg';
 import paperImage from '@/assets/paper.svg';
 import scissorsImage from '@/assets/scissors.svg';
-import { ChangeEvent, PropsWithChildren, useCallback, useContext } from 'react';
+import { ChangeEvent, PropsWithChildren, useContext } from 'react';
 import { cn } from '@/lib/utils';
 import { Card, CardHeader } from './ui/card';
 import Point from './svg/point';
